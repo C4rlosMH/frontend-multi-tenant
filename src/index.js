@@ -93,6 +93,7 @@ const PORT = process.env.PORT
 
 app.listen(PORT, async () => {
 
+  console.log(`Servidor corriendo en http://localhost:${PORT}`);
   try {
     await prisma.$connect();
     // Carga datos iniciales si la BD está vacía

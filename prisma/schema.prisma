@@ -2,6 +2,12 @@ generator client {
   provider = "prisma-client-js"
 }
 
+generator erd {
+  provider = "prisma-erd-generator"
+  output   = "../ERD.svg"
+  theme    = "forest"  // Opcional: puedes probar 'default', 'dark', 'forest'
+}
+
 datasource db {
   provider = "mysql"
   url      = env("DATABASE_URL")
