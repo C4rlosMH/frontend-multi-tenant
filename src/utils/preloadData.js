@@ -42,7 +42,7 @@ export const STANDARD_STRUCTURE_TEMPLATE = [
     },
     {
         depto: "Ventas",
-        areas: ["Ventas", "Reservaciones"]
+        areas: ["Ventas", "Reservaciones", "Guest Experience"]
     },
     {
         depto: "Spa",
@@ -50,7 +50,10 @@ export const STANDARD_STRUCTURE_TEMPLATE = [
     },
     {
         depto: "TI",
-        areas: ["TI"]
+        areas: ["TI", "Sistemas"]
+    },
+    {   depto: "Golden Shores",
+        areas: ["Golden Shores"]
     }
 ];
 
@@ -73,10 +76,10 @@ export const preloadMasterData = async () => {
             
             await prisma.userSistema.create({
                 data: {
-                    username: "root",
-                    email: "root@simet.com",
+                    username: "superuser",
+                    email: "superuser@simet.com",
                     password: hashedPassword,
-                    nombre: "Super Admin",
+                    nombre: "Superusuario",
                     rol: ROLES.ROOT, // Acceso total
                 }
             });

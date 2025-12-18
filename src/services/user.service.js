@@ -1,7 +1,7 @@
 import prisma from "../../src/PrismaClient.js";
 import ExcelJS from "exceljs";
 import * as auditService from "./audit.service.js"; 
-import { ROLES } from "../config/constants.js"; // 👈 IMPORTANTE
+import { ROLES } from "../config/constants.js";
 
 // --- CORRECCIÓN DE SEGURIDAD MULTI-TENANT ---
 const getTenantFilter = (user) => {
@@ -64,7 +64,6 @@ export const getUsers = async ({ skip, take, search, sortBy, order }, user) => {
   return { users, totalCount };
 };
 
-// MODIFICADO: Ahora incluimos areaId y hotelId en la selección para permitir el filtrado y auto-relleno en el frontend
 export const getAllUsers = (user) => {
     const tenantFilter = getTenantFilter(user);
     return prisma.user.findMany({
@@ -72,8 +71,8 @@ export const getAllUsers = (user) => {
         select: { 
           id: true, 
           nombre: true, 
-          areaId: true, // Requerido para el auto-relleno de área
-          hotelId: true // Requerido para filtrar por hotel si el usuario es ROOT/CORP
+          areaId: true, 
+          hotelId: true 
         },
         orderBy: { nombre: 'asc' }
     });
@@ -265,16 +264,30 @@ export const importUsersFromExcel = async (buffer, user, targetHotelId = null) =
   await workbook.xlsx.load(buffer);
   const worksheet = workbook.getWorksheet(1);
 
-  const headerMap = {};
-  worksheet.getRow(1).eachCell((cell, colNumber) => {
-    headerMap[cleanLower(cell.value)] = colNumber;
-  });
-
+  // --- BUSCADOR DINÁMICO DE ENCABEZADOS ---
   const validNameHeaders = ['nombre', 'nombre completo', 'empleado'];
-  const hasName = validNameHeaders.some(h => headerMap[cleanLower(h)]);
+  let headerRowNumber = 0;
+  const headerMap = {};
 
-  if (!hasName) {
-      throw new Error("El archivo no es válido: Falta la columna 'Nombre' en el encabezado.");
+  // Buscamos en las primeras 10 filas la fila que contenga la columna 'Nombre'
+  for (let i = 1; i <= 10; i++) {
+      const row = worksheet.getRow(i);
+      let found = false;
+      row.eachCell((cell) => {
+          if (validNameHeaders.includes(cleanLower(cell.value))) found = true;
+      });
+
+      if (found) {
+          headerRowNumber = i;
+          row.eachCell((cell, colNumber) => {
+              headerMap[cleanLower(cell.value)] = colNumber;
+          });
+          break;
+      }
+  }
+
+  if (headerRowNumber === 0) {
+      throw new Error("El archivo no es válido: No se encontró la columna 'Nombre' en las primeras filas.");
   }
 
   const secondaryColumns = ['correo', 'email', 'área', 'area', 'departamento', 'usuario', 'login']; 
@@ -285,8 +298,6 @@ export const importUsersFromExcel = async (buffer, user, targetHotelId = null) =
   }
 
   const usersToCreate = [];
-  const errors = [];
-
   const areas = await prisma.area.findMany({
     where: { 
         deletedAt: null,
@@ -301,10 +312,9 @@ export const importUsersFromExcel = async (buffer, user, targetHotelId = null) =
   };
 
   worksheet.eachRow((row, rowNumber) => {
-    if (rowNumber === 1) return;
+    if (rowNumber <= headerRowNumber) return; // Saltamos los encabezados y filas superiores
 
     const rowData = extractRowData(row, headerMap);
-
     if (!rowData.nombre) return; 
 
     const areaId = resolveArea(rowData, context);
@@ -324,6 +334,7 @@ export const importUsersFromExcel = async (buffer, user, targetHotelId = null) =
   }
 
   let successCount = 0;
+  const errors = [];
 
   for (const u of usersToCreate) {
     try {
