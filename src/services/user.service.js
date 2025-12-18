@@ -64,11 +64,17 @@ export const getUsers = async ({ skip, take, search, sortBy, order }, user) => {
   return { users, totalCount };
 };
 
+// MODIFICADO: Ahora incluimos areaId y hotelId en la selección para permitir el filtrado y auto-relleno en el frontend
 export const getAllUsers = (user) => {
     const tenantFilter = getTenantFilter(user);
     return prisma.user.findMany({
         where: { deletedAt: null, ...tenantFilter },
-        select: { id: true, nombre: true },
+        select: { 
+          id: true, 
+          nombre: true, 
+          areaId: true, // Requerido para el auto-relleno de área
+          hotelId: true // Requerido para filtrar por hotel si el usuario es ROOT/CORP
+        },
         orderBy: { nombre: 'asc' }
     });
 };
