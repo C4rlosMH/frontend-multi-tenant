@@ -1,8 +1,7 @@
 import prisma from "../../src/PrismaClient.js";
 import * as auditService from "./audit.service.js";
-import { ROLES } from "../config/constants.js"; // 👈 IMPORTANTE
+import { ROLES } from "../config/constants.js"; 
 
-// --- CORRECCIÓN DE SEGURIDAD MULTI-TENANT ---
 const getTenantFilter = (user) => {
   if (!user) return { hotelId: -1 }; // Bloqueo total si no hay usuario
 
@@ -25,7 +24,6 @@ const getTenantFilter = (user) => {
   // 4. Fallback seguro (No ve nada)
   return { hotelId: -1 };
 };
-// ----------------------------------------------------
 
 export const getMaintenances = async ({ skip, take, where, sortBy, order }, user) => {
   const tenantFilter = getTenantFilter(user);
@@ -33,7 +31,7 @@ export const getMaintenances = async ({ skip, take, where, sortBy, order }, user
   const finalWhere = {
     ...where,
     deletedAt: null,
-    ...tenantFilter // 👈 Aplicamos el filtro seguro
+    ...tenantFilter
   };
 
   let orderBy = { fecha_programada: 'desc' };
@@ -76,7 +74,7 @@ export const getMaintenanceById = (id, user) => {
     where: {
       id: Number(id),
       deletedAt: null,
-      ...tenantFilter // 👈 Seguridad aquí también
+      ...tenantFilter
     },
     include: {
       device: {

@@ -1,6 +1,6 @@
 import prisma from "../../src/PrismaClient.js";
 import * as auditService from "./audit.service.js"; 
-import { ROLES } from "../config/constants.js"; // 👈 IMPORTANTE
+import { ROLES } from "../config/constants.js";
 
 // --- CORRECCIÓN DE SEGURIDAD MULTI-TENANT ---
 const getTenantFilter = (user) => {
@@ -21,7 +21,6 @@ const getTenantFilter = (user) => {
 
   return { hotelId: -1 };
 };
-// ----------------------------------------------------
 
 export const getDepartments = async ({ skip, take, sortBy, order }, user) => {
   let orderBy = { nombre: 'asc' };
@@ -35,7 +34,7 @@ export const getDepartments = async ({ skip, take, sortBy, order }, user) => {
   }
 
   const tenantFilter = getTenantFilter(user);
-  const whereClause = { deletedAt: null, ...tenantFilter }; // 👈 Filtro aplicado
+  const whereClause = { deletedAt: null, ...tenantFilter };
 
   const [departments, totalCount] = await prisma.$transaction([
     prisma.department.findMany({

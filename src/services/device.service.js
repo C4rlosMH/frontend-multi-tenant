@@ -1,9 +1,8 @@
 import prisma from "../../src/PrismaClient.js";
 import ExcelJS from "exceljs";
-import { DEVICE_STATUS, DEFAULTS, ROLES } from "../config/constants.js"; // 👈 Asegúrate de importar ROLES
+import { DEVICE_STATUS, DEFAULTS, ROLES } from "../config/constants.js";
 import * as auditService from "./audit.service.js";
 
-// --- CORRECCIÓN DE SEGURIDAD MULTI-TENANT ---
 const getTenantFilter = (user) => {
   if (!user) return { hotelId: -1 }; // Bloqueo de seguridad
 
@@ -28,9 +27,7 @@ const getTenantFilter = (user) => {
   // 4. Fallback: Si no tiene permisos ni hoteles asignados, no ve nada
   return { hotelId: -1 };
 };
-// ----------------------------------------------------
 
-// MODIFICADO: Se añade 'typeIds' a los argumentos desestructurados
 export const getActiveDevices = async ({ skip, take, search, filter, sortBy, order, typeIds }, user) => {
   const tenantFilter = getTenantFilter(user);
 
@@ -508,9 +505,6 @@ export const getDashboardStats = async (user) => {
     devicesByType 
   };
 };
-
-// ... (Aquí sigue la lógica de importación, no es necesario cambiarla para este fix,
-// pero asegúrate de no borrar las funciones importDevicesFromExcel y getExpiredWarrantyAnalysis)
 
 const clean = (txt) => txt ? txt.toString().trim() : "";
 const cleanLower = (txt) => {

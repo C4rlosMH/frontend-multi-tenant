@@ -381,13 +381,12 @@ export const exportResguardo = async (req, res, next) => {
         const { id } = req.params;
         const { userId } = req.query; 
         
-        // Obtenemos dispositivo y su hotel relacionado
         const device = await prisma.device.findUnique({
             where: { id: Number(id) },
             include: { 
                 usuario: true, 
                 tipo: true, 
-                hotel: true // Importante: incluir el hotel
+                hotel: true
             }
         });
 

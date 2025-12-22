@@ -4,7 +4,7 @@ import {
   getDevices, getDevice, createDevice, updateDevice, deleteDevice,
   getAllActiveDeviceNames, exportInactiveDevices, exportAllDevices,
   importDevices, exportCorrectiveAnalysis, getPandaStatus, getDashboardData,
-  exportResguardo // IMPORTAR
+  exportResguardo
 } from "../controllers/device.controller.js";
 import { verifyRole, verifyToken } from "../middlewares/auth.middleware.js";
 import { validateCreateDevice, validateUpdateDevice } from "../validators/device.validator.js";

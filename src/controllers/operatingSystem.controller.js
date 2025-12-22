@@ -43,7 +43,7 @@ export const getOperatingSystem = async (req, res, next) => {
 
 export const createOperatingSystem = async (req, res, next) => {
   try {
-    const os = await operatingSystemService.createOperatingSystem(req.body, req.user); // 👈 req.user
+    const os = await operatingSystemService.createOperatingSystem(req.body, req.user);
     res.status(201).json(os);
   } catch (error) {
     next(error);
@@ -54,7 +54,7 @@ export const updateOperatingSystem = async (req, res, next) => {
   try {
     const oldOs = await operatingSystemService.getOperatingSystemById(req.params.id);
     if (!oldOs) return res.status(404).json({ message: "Operating System not found" });
-    const os = await operatingSystemService.updateOperatingSystem(req.params.id, req.body, req.user); // 👈 req.user
+    const os = await operatingSystemService.updateOperatingSystem(req.params.id, req.body, req.user);
     res.json(os);
   } catch (error) {
     next(error);
@@ -65,7 +65,7 @@ export const deleteOperatingSystem = async (req, res, next) => {
   try {
     const oldOs = await operatingSystemService.getOperatingSystemById(req.params.id);
     if (!oldOs) return res.status(404).json({ message: "Operating System not found" });
-    await operatingSystemService.deleteOperatingSystem(req.params.id, req.user); // 👈 req.user
+    await operatingSystemService.deleteOperatingSystem(req.params.id, req.user);
     res.json({ message: "Operating System deleted" });
   } catch (error) {
     next(error);

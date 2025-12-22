@@ -1,5 +1,5 @@
 import prisma from "../PrismaClient.js";
-import { ROLES } from "../config/constants.js"; // 👈 Asegúrate de que existe esta constante
+import { ROLES } from "../config/constants.js";
 
 export const logActivity = async ({
   action,
@@ -42,7 +42,7 @@ export const logActivity = async ({
       }
     });
   } catch (error) {
-    console.error("⚠️ Error al registrar auditoría:", error.message);
+    console.error("Error al registrar auditoría:", error.message);
   }
 };
 
@@ -80,7 +80,6 @@ export const getAuditLogs = async ({ skip, take, entity, userId, hotelId }, user
       // 4. Usuario sin permisos ni hoteles
       where.hotelId = -1;
   }
-  // -------------------------------------
 
   if (entity) where.entity = entity;
   if (userId) where.userId = Number(userId);

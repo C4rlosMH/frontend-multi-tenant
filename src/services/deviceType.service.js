@@ -1,5 +1,5 @@
 import prisma from "../../src/PrismaClient.js";
-import * as auditService from "./audit.service.js"; // 👈 IMPORTAR
+import * as auditService from "./audit.service.js";
 
 export const getDeviceTypes = async ({ skip, take, sortBy, order }) => {
   const orderBy = sortBy ? { [sortBy]: order } : { nombre: 'asc' };

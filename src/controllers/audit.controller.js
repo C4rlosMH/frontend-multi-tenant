@@ -39,7 +39,7 @@ export const getAuditLogs = async (req, res) => {
         userId: safeUserId, 
         hotelId: safeHotelId 
       },
-      req.user // 👈 El usuario autenticado es vital para el filtro
+      req.user
     );
 
     // 5. Respuesta

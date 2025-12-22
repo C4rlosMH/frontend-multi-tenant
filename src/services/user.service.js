@@ -3,7 +3,6 @@ import ExcelJS from "exceljs";
 import * as auditService from "./audit.service.js"; 
 import { ROLES } from "../config/constants.js";
 
-// --- CORRECCIÓN DE SEGURIDAD MULTI-TENANT ---
 const getTenantFilter = (user) => {
   if (!user) return { hotelId: -1 };
 
@@ -22,7 +21,6 @@ const getTenantFilter = (user) => {
 
   return { hotelId: -1 };
 };
-// ----------------------------------------------------
 
 export const getUsers = async ({ skip, take, search, sortBy, order }, user) => {
   const tenantFilter = getTenantFilter(user);

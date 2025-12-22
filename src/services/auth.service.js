@@ -197,7 +197,6 @@ export const updateUser = async (id, data, adminUser) => {
 
   // Validar reglas antes de intentar actualizar
   validateRoleAndHotels(targetRole, targetHotelIds);
-  // --------------------------------
 
   const updateData = {};
   if (nombre) updateData.nombre = nombre;

@@ -71,7 +71,6 @@ export const preloadMasterData = async () => {
         // Este es el único usuario que necesita existir sí o sí para empezar
         const rootUser = await prisma.userSistema.findUnique({ where: { username: "root" } });
         if (!rootUser) {
-            // En producción, idealmente esta contraseña vendría de una variable de entorno
             const hashedPassword = await bcrypt.hash(process.env.ROOT_PASS, 10);
             
             await prisma.userSistema.create({

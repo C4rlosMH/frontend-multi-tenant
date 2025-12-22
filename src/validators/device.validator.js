@@ -1,4 +1,3 @@
-// src/validators/device.validator.js
 import { check } from 'express-validator';
 import { validateResult } from '../middlewares/validateHelper.js';
 

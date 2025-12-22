@@ -9,7 +9,7 @@ export const getDepartments = async (req, res, next) => {
     const skip = (page - 1) * limit;
 
     if (isNaN(limit) || limit === 0 || req.query.limit === undefined || req.query.limit === '0') {
-        const departments = await departmentService.getAllDepartments(req.user); // 👈 req.user
+        const departments = await departmentService.getAllDepartments(req.user);
         return res.json(departments);
     }
     
