@@ -9,15 +9,20 @@ const createTransporter = () => {
   return nodemailer.createTransport({
     host: process.env.EMAIL_HOST,
     port: process.env.EMAIL_PORT,
-    secure: process.env.EMAIL_SECURE,
+    secure: process.env.EMAIL_SECURE === 'true', // Asegúrate de que sea booleano
     auth: {
       user: process.env.EMAIL_USER,
       pass: process.env.EMAIL_PASS,
     },
     tls: {
+      // Requerido para Microsoft 365 si hay problemas con certificados
       rejectUnauthorized: false,
+      ciphers: 'SSLv3'
     },
-    family: 4 
+    family: 4,
+    // --- ESTAS LÍNEAS ACTIVAN EL LOG DETALLADO EN CONSOLA ---
+    logger: true, 
+    debug: true  
   });
 };
 
@@ -76,9 +81,23 @@ export const sendMaintenanceReminder = async (maintenance, manager, daysUntil) =
 
   try {
     const transporter = createTransporter();
+    
+    console.log(`Intentando conectar con el servidor SMTP: ${process.env.EMAIL_HOST}...`);
+    
+    // El verify nos dirá si la conexión y autenticación son correctas antes de intentar enviar
     await transporter.verify(); 
-    await transporter.sendMail(mailOptions);
+    console.log("Conexión SMTP verificada exitosamente.");
+
+    const info = await transporter.sendMail(mailOptions);
+    console.log("Correo enviado con éxito. Message ID:", info.messageId);
+
   } catch (error) {
-    console.error(`Error al enviar correo de RECORDATORIO a ${manager.correo}:`, error.code || error.message);
+    // Log expandido para capturar la causa raíz
+    console.error("--- ERROR EN ENVÍO DE CORREO ---");
+    console.error(`Destinatario: ${manager.correo}`);
+    console.error(`Código de error: ${error.code}`);
+    console.error(`Respuesta del servidor: ${error.response}`);
+    console.error("Detalle completo del error:", error);
+    console.error("---------------------------------");
   }
 };
